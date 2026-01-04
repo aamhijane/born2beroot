@@ -36,7 +36,7 @@ The VM is configured with minimal services (no graphical interface), encrypted p
 
 ### Why Debian?
 
-I chose **Debian 12 (Bookworm)** over Rocky Linux for this project.
+I chose **Debian 13 (trixie)** over Rocky Linux for this project.
 
 **Advantages:**
 - Recommended for beginners in system administration
@@ -58,7 +58,7 @@ I chose **Debian 12 (Bookworm)** over Rocky Linux for this project.
 ### System Information
 
 ```
-OS: Debian GNU/Linux 12 (Bookworm)
+OS: Debian GNU/Linux 13 (trixie)
 Kernel: Linux 6.12.57+deb13-amd64
 Architecture: x86_64
 Hostname: ayamhija42
@@ -109,8 +109,8 @@ sda                    30G   disk
 ### Prerequisites
 
 - VirtualBox 7.0+ or UTM (for Apple Silicon)
-- Debian 12 ISO image
-- Minimum 1GB RAM, 8GB disk space (30GB recommended for bonus)
+- Debian 13 ISO image
+- Minimum 1/2GB RAM, 8GB disk space (30GB recommended for bonus)
 
 ### Installation Steps
 
@@ -519,7 +519,7 @@ sudo fail2ban-client status sshd
 ### System Information
 ```bash
 hostname                        # Check hostname (ayamhija42)
-cat /etc/os-release            # OS version (Debian 12)
+cat /etc/os-release            # OS version (Debian 13)
 uname -r                        # Kernel version
 uname -a                        # Full system info
 ```
@@ -667,7 +667,7 @@ This approach ensured genuine learning while leveraging AI as an efficient resea
 ### Mandatory Requirements Met ✅
 
 - ✅ Virtual machine created with VirtualBox
-- ✅ Debian 12 (latest stable) installed
+- ✅ Debian 13 (latest stable) installed
 - ✅ No graphical interface (command-line only)
 - ✅ At least 2 encrypted partitions using LVM (sda5_crypt with multiple LVMs)
 - ✅ AppArmor running at startup and enforcing profiles
@@ -689,120 +689,6 @@ This approach ensured genuine learning while leveraging AI as an efficient resea
 
 ---
 
-## Common Issues and Solutions
-
-### Issue 1: WordPress Redirects to Wrong Port
-**Problem**: WordPress redirects to incorrect URL with port number  
-**Solution**: Configure `WP_HOME` and `WP_SITEURL` in `wp-config.php`:
-```php
-define('WP_HOME', 'http://YOUR_VM_IP/wordpress');
-define('WP_SITEURL', 'http://YOUR_VM_IP/wordpress');
-```
-
-### Issue 2: SSH Connection Refused
-**Problem**: Cannot connect via SSH on port 4242  
-**Solution**: 
-```bash
-# Check SSH is running
-sudo systemctl status ssh
-
-# Check port is open in firewall
-sudo ufw status | grep 4242
-
-# Verify SSH is listening on 4242
-sudo ss -tunlp | grep :4242
-```
-
-### Issue 3: Monitoring Script Not Running
-**Problem**: Script doesn't broadcast every 10 minutes  
-**Solution**:
-```bash
-# Check cron is running
-sudo systemctl status cron
-
-# Verify crontab entry exists
-sudo crontab -l -u root
-
-# Test script manually
-bash /usr/local/bin/monitoring.sh
-
-# Check script is executable
-ls -l /usr/local/bin/monitoring.sh
-sudo chmod +x /usr/local/bin/monitoring.sh
-```
-
-### Issue 4: Password Policy Not Enforced
-**Problem**: Weak passwords are accepted  
-**Solution**: Verify PAM configuration:
-```bash
-cat /etc/pam.d/common-password | grep pam_pwquality
-# Install if missing:
-sudo apt install libpam-pwquality
-```
-
-### Issue 5: Sudo Logs Not Created
-**Problem**: /var/log/sudo/sudo.log is empty  
-**Solution**: 
-```bash
-# Create directory if missing
-sudo mkdir -p /var/log/sudo
-
-# Verify sudoers configuration
-sudo cat /etc/sudoers.d/sudo_config | grep logfile
-```
-
----
-
-## Defense Preparation Checklist
-
-### Before Your Defense
-
-- [ ] VM is running and accessible
-- [ ] No snapshots exist (check VirtualBox snapshots tab)
-- [ ] signature.txt is up-to-date and matches current .vdi file
-- [ ] All mandatory services are running (SSH, UFW, AppArmor)
-- [ ] All bonus services are running (lighttpd, MariaDB, fail2ban)
-- [ ] monitoring.sh is broadcasting every 10 minutes
-- [ ] Can create a new user and add to groups
-- [ ] Can change hostname and verify change
-- [ ] Know all password policy settings
-- [ ] Know all sudo configuration rules
-- [ ] Can explain monitoring.sh line by line
-- [ ] WordPress is accessible and functional
-- [ ] Can explain why you chose each bonus service
-
-### Commands to Memorize
-
-```bash
-# Quick system check
-hostname && uname -r && lsblk
-
-# Services status
-sudo systemctl status ssh ufw apparmor lighttpd mariadb fail2ban
-
-# User management
-sudo adduser newuser
-sudo usermod -aG user42 newuser
-groups newuser
-
-# Hostname change
-sudo hostnamectl set-hostname newhostname42
-
-# Password policy check
-sudo chage -l username
-
-# Firewall status
-sudo ufw status verbose
-
-# AppArmor status
-sudo aa-status
-
-# Monitoring test
-bash /usr/local/bin/monitoring.sh
-```
-
----
-
 ## Author
 
 **ayamhija** - 42 Network Student  
@@ -816,26 +702,3 @@ bash /usr/local/bin/monitoring.sh
 ## License
 
 This project is part of the 42 Network curriculum. All configurations and scripts are provided for educational purposes.
-
----
-
-## Acknowledgments
-
-- 42 Network for the comprehensive project subject
-- Debian community for extensive documentation
-- VirtualBox team for robust virtualization platform
-- Fellow 42 students for peer learning and support
-
----
-
-## Notes
-
-- `signature.txt` is submitted separately at repository root (VM itself not included per subject requirements)
-- Snapshots are forbidden and have been removed from VirtualBox
-- VM can be cloned for backup purposes using VirtualBox's clone feature
-- All configurations have been tested and verified before submission
-- Defense-ready: All mandatory and bonus requirements are met and functional
-
----
-
-**End of README**
